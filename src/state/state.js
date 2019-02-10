@@ -61,6 +61,6 @@ export class State {
       }
     }
 
-    return $$.clone(this.__defaultValue);
+    return $$.clone(this.__default_value);
   }
 }
