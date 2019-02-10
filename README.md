@@ -5,6 +5,7 @@
 # Golgua.js ( version β )
 
 [![Build Status](https://travis-ci.org/golgua/golgua.js.svg?branch=master)](https://travis-ci.org/golgua/golgua.js)
+[![npm version](https://badge.fury.io/js/golgua.svg)](https://badge.fury.io/js/golgua)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 # Overview
