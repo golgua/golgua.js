@@ -54,7 +54,7 @@ maker.listen( updated_data => {
   alert( update_data.message ); // Hello World!!
 });
 
-maker.update({ message : "Hello World" });
+maker.update({ message : "Hello World" });
 
 ```
 
