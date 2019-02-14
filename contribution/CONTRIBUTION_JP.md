@@ -16,7 +16,7 @@
 
 1. リポジトリを fork します
 
-2. ローカルへ  clone します。
+2. ローカルへ clone します。
 
 3. ローカルリポジトリで新規ブランチを作成します。
 
@@ -26,11 +26,11 @@
 
 6. Pull Request を作成
 
-## バグの報告・ アイディアの提案
+## バグの報告・ アイディアの提案
 
 ### 報告前の確認事項
 
--  報告の管理には、Github issues で管理します
+-  報告の管理には、Github issues で管理します
 
 - すでに報告されていない issue か、確認してください
 
@@ -42,6 +42,6 @@
 
 ## Slack でのサポート
 
-slack でのサポートもしています。何か間違っている事や、気になることがあれば、気軽に参加してください。😆
+slack でのサポートもしています。何か間違っている事や、気になることがあれば、気軽に参加してください。😆
 
 - [Slack招待URL](https://join.slack.com/t/golgua/shared_invite/enQtNTQxOTcyODk5MDg4LTQyYTQyODgxZjJmYmJmYTg4Njk1MmNiYjA2ZWEyMzNiNTk0MmYxMWY5MmIwOWE4OTIxMWRiMDE2NWQ1NDBjYzk)
