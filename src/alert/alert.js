@@ -21,9 +21,9 @@ export const throwError = (key, ...args) => {
 };
 
 export const consoleError = (key, ...args) => {
-  console.error(getMessage(key, ...args));
+  console.error(getMessage(key, ...args)); // eslint-disable-line
 };
 
 export const consoleWran = (key, ...args) => {
-  console.warn(getMessage(key, ...args));
+  console.warn(getMessage(key, ...args)); // eslint-disable-line
 };

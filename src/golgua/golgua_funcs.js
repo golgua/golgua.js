@@ -7,6 +7,7 @@ import { GolguaManager } from '../golgua/golgua';
 const stateInit = (state, cb, parent) => {
   state.__id = GolguaManager.addState(state, parent);
   state.state = state.defaultValue();
+  state.__state = state.defaultValue();
 
   const promise = state.init();
 

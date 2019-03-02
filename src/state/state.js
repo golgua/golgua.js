@@ -1,5 +1,6 @@
 import * as $$ from '../order/order';
 import { TypeBase } from '../types/TypeBase';
+import { throwError } from '../alert/alert';
 
 /**
  * @description State Super Class
@@ -47,6 +48,10 @@ export class State {
    * @return {Any}
    */
   defaultValue() {
+    if (this.__id === null) {
+      throwError('It can not be executed in the constructor.');
+    }
+
     if (this.__default_value !== null) return $$.clone(this.__default_value);
 
     const types = this.types;

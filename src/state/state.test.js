@@ -22,6 +22,7 @@ describe('State Method Test', () => {
 
   before(() => {
     test_state = new TestState();
+    test_state.__id = 129499302039; // Test value
   });
 
   context('defaultValue function', () => {
@@ -35,6 +36,22 @@ describe('State Method Test', () => {
       const default_value2 = test_state.defaultValue();
 
       assert.isFalse(default_value === default_value2);
+    });
+
+    context('throw error', () => {
+      it('can not be executed in the constructor.', () => {
+        class DefaultState extends State {
+          constructor() {
+            super();
+            this.types = {
+              message: Types.string({ default_value: 'string' }),
+            };
+            this.defaultValue();
+          }
+        }
+
+        assert.throw(() => new DefaultState());
+      });
     });
   });
 });

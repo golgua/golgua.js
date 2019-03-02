@@ -12,14 +12,14 @@ export class Maker {
    * @param {State} state State Class
    */
   constructor(state) {
-    this.__state = createState(state, this.__callback_execute);
-    this.__id = GolguaManager.addMaker(this);
-    this.__callbacks = {};
-
     this.__callback_execute = (updatedValue, state) => {
       const cbs = this.__callbacks[state.__id];
       if (cbs) cbs.forEach(cb => cb(updatedValue));
     };
+
+    this.__state = createState(state, this.__callback_execute);
+    this.__id = GolguaManager.addMaker(this);
+    this.__callbacks = {};
   }
 
   /**
@@ -95,7 +95,7 @@ export class Maker {
    * @return {Any}
    */
   getStateValue() {
-    return $$.clone(this.__state.state);
+    return $$.clone(this.__state.__state);
   }
 }
 

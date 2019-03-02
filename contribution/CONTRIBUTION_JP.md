@@ -44,4 +44,4 @@
 
 slack でのサポートもしています。何か間違っている事や、気になることがあれば、気軽に参加してください。😆
 
-- [Slack招待URL](https://join.slack.com/t/golgua/shared_invite/enQtNTQxOTcyODk5MDg4LTQyYTQyODgxZjJmYmJmYTg4Njk1MmNiYjA2ZWEyMzNiNTk0MmYxMWY5MmIwOWE4OTIxMWRiMDE2NWQ1NDBjYzk)
+- [Slack招待URL](https://join.slack.com/t/golgua/shared_invite/enQtNTQxOTcyODk5MDg4LTQyYTQyODgxZjJmYmJmYTg4Njk1MmNiYjA2ZWEyMzNiNTk0MmYxMWY5MmIwOWE4OTIxMWRiMDE2NWQ1NDBjYzk)
