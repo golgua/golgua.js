@@ -22,7 +22,6 @@ describe('State Method Test', () => {
 
   before(() => {
     test_state = new TestState();
-    test_state.state = test_state.defaultValue();
   });
 
   context('defaultValue function', () => {
