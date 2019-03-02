@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "10"
+before_deploy:
+  - yarn build
+deploy:
+  provider: npm
+  email: golgua.js@gmail.com
+  skip_cleanup: true
+  on:
+    tags: true
+  api_key:
+    secure: a8kpGujjEGP7uYIlqQBBKC7AmJap1qJ+0VD9AMisxUHZy2JzAZNmYWeX1QyGpaFLQC5Sb72Ytvk9BmAEb42UKsFdohcAg4SCkP2N1mC4eQxWOAd/T2A+L+mM5Eeqq3Xg5kVIfPMO3WofN/k/DPmPqRn1xkBAhhmAwAvXytCvLJgcw/tpGc8QXbWBm1fZXnLNQBGrVALw18kJBGMRKKEYnPA/+tpQXtUjR18pJKEv9pbaPbd88zDom0Q5ksOLP+TI5T6gBUXFsz6UMjecyRnGaOY+XdQ8cCySUHGwUR9BmzcYXrJqKzSZCf3eOsvqdK5VOwFfpbagjWS2DQ517ijkocW8uNiKtZxIg6q5yEb2Fh0twRSBJcnY4u5E4X5aFuzY7w+VNmmIo3VKM1ZIV5Da3NJ2zlgpsTqJX+F6UHsBWaEAU5a/x+2XLR2OdPRP5jgIyiYngSWXFEny8Veat2gg9mL0jyjKyzKwc4O7l+etnc+HViu4dK+SS0n9xkLP18c7lCwQ223yRpC5chQmXOzThRSaOAnLNkToBnkOxQdNV+nQfkbUVioEycgMUalRqBjAuuJ0eV22y4O3f5y0M4rVo1ml6/wSC1Xm8+aSXap/WuXJrIHwBqlDnBKcIC2qpaYTjW0ZBpBWCeTf+qH3xMeK/jrnxdVdziIhOjLxvyQ4rkg=

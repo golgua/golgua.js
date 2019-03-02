@@ -1,0 +1,17 @@
+{
+  "env": {
+    "test": {
+      "presets": ["env"],
+      "plugins": ["babel-plugin-transform-class-properties"]
+    }
+  },
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ]
+  ],
+  "plugins": ["babel-plugin-transform-class-properties"]
+}
