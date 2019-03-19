@@ -1,24 +1,21 @@
-import { TypeBase } from './TypeBase';
-import { throwError } from '../alert/alert';
+import { TypesBase } from './TypesBase';
 
 /**
  * @description Super class of Primitive type
  */
-class PrimeTypes extends TypeBase {
+class PrimeTypes extends TypesBase {
   /**
    * @description Check type based on isTypes
    * @param {any} value check value
    * @return {Boolean}
    */
   check(value) {
-    if (this.__nullable && value === null) return true;
-
     if (this.isTypes(value)) {
-      if (this.__pattern) return this.__pattern(value);
-      else return true;
+      const data = this.__proc ? this.__proc(value) : value;
+      return { success: true, data };
     }
 
-    throwError('Types.check', this, value);
+    return { success: false, data: value };
   }
 }
 

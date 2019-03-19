@@ -17,8 +17,8 @@ export const clone = value => {
 
   if (value instanceof Date) return new Date(value.getTime());
   if (value instanceof RegExp) return new RegExp(value);
-  if (value instanceof Number) return new Number(value); // eslint-disable-line
-  if (value instanceof String) return new String(value); // eslint-disable-line
+  if (value instanceof Number) return value.valueOf();
+  if (value instanceof String) return value.valueOf();
 
   if (typeof value === 'object') {
     const copy = new value.constructor();

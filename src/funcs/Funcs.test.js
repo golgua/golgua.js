@@ -1,4 +1,4 @@
-import * as $$ from './order';
+import * as $$ from './Funcs';
 import chai from 'chai';
 
 /* eslint-disable */

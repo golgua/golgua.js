@@ -9,6 +9,7 @@
   "extends": ["eslint:recommended", "google", "plugin:prettier/recommended"],
   "rules": {
     "guard-for-in": "off",
+    "camelcase":"off",
     "prettier/prettier": [
       "error",
       {

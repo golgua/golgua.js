@@ -1,13 +1,11 @@
-import { State } from './state/state';
-import { Types } from './types/types';
-import { GolguaManager } from './golgua/golgua';
-import { createMaker } from './maker/maker';
+import { Types } from './types/Types';
+import { subscription, update, updateWithTypes } from './golgua/Golgua';
 
 const Golgua = {
   Types,
-  State,
-  createMaker,
-  searchMaker: GolguaManager.searchMaker,
+  subscription,
+  update,
+  updateWithTypes,
 };
 
 export default Golgua;

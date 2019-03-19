@@ -4,6 +4,8 @@ import chai from 'chai';
 
 const assert = chai.assert;
 
+/* eslint-env mocha */
+
 describe('ObjectLikeTypes', () => {
   context('ObjectTypes', () => {
     const types = {

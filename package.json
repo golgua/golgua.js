@@ -4,17 +4,17 @@
   "main": "./lib/index.js",
   "license": "MIT",
   "types": "./index.d.ts",
-  "author": "Golgua <golgua.js@gmail> (https://github.com/golgua)",
+  "author": "uttk <golgua.js@gmail> (https://github.com/uttk)",
   "keywords": [
     "golgua"
   ],
   "bugs": {
-    "url": "https://github.com/golgua/golgua.js/issues"
+    "url": "https://github.com/uttk/golgua.js/issues"
   },
   "description": "Golgua.js is a javascript Store management framework.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/golgua/golgua.js.git"
+    "url": "https://github.com/uttk/golgua.js.git"
   },
   "files": [
     "lib",

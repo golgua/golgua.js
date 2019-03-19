@@ -1,9 +1,11 @@
-import { Types } from './types';
+import { Types } from './Types';
 import { StringTypes, NumberTypes, BooleanTypes } from './PrimeTypes';
 import { ObjectTypes, ArrayTypes } from './ObjectLikeTypes';
 import chai from 'chai';
 
 const assert = chai.assert;
+
+/* eslint-env mocha */
 
 describe('Types Test', () => {
   it('create type instance', () => {

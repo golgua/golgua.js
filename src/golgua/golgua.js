@@ -1,113 +1,83 @@
-import * as $$ from '../order/order';
-import { State } from '../state/state';
-import { throwError } from '../alert/alert';
+import { TypesBase } from '../types/TypesBase';
+import { GolguaDataStore } from '../store/Store';
 
 /**
- * @description Golgua Manager Class. Singleton Class.
+ * @description Keep GolguaTypes to subscribe
  */
-class GolguaClass {
-  /**
-   * @description initialize propertypes
-   */
-  constructor() {
-    this.makers = {};
-    this.states = {};
+const GolguaTypesStore = {};
+
+/**
+ * @description Make the framework subscribe to "Types"
+ * @param {GolguaTypes} types Subscribe to "GolguaTypes"
+ */
+export const subscription = types => {
+  if (types instanceof TypesBase) {
+    const typesStore = GolguaTypesStore[types.type] || {};
+    const typesID = types.__id__;
+
+    typesStore[typesID] = {
+      types,
+      store: new GolguaDataStore(types),
+    };
+    GolguaTypesStore[types.type] = typesStore;
+  } else {
+    throw new Error(
+      'The value of the passed argument is invalid. Please pass GolguaTypesInstance.'
+    );
+  }
+};
+
+/**
+ * @description Update Store value according to argument type
+ * @param {Any} value update value
+ * @return {{ success:Boolean, data:Any }}
+ */
+export const update = value => {
+  if (value === null) {
+    throw new Error('null is not accepted as a value to update.');
   }
 
-  /**
-   * @description Add an instance of Maker to the list
-   * @param {Maker} maker maker instance
-   * @return {String} unique id
-   */
-  addMaker(maker) {
-    const id = $$.getUniqueId();
-    this.makers[id] = maker;
-    return id;
-  }
+  const typesStore = GolguaTypesStore[typeof value];
 
-  /**
-   * @description Add an instance of State to the list
-   * @param {State} state state instance
-   * @param {State} parent parent state instance
-   * @return {String} unique id
-   */
-  addState(state, parent = null) {
-    const id = $$.getUniqueId();
-    this.states[id] = { state, parent };
-    return id;
-  }
+  if (!typesStore) throw new Error('It looks like an unregistered type.');
 
-  /**
-   * @description Find a Maker instance with StateClass
-   * @param {State} StateClass state class
-   * @return {Maker}
-   */
-  searchMaker(StateClass) {
-    if (State.isPrototypeOf(StateClass)) {
-      for (const id in this.makers) {
-        if (this.makers[id].__state instanceof StateClass) {
-          return this.makers[id];
-        }
-      }
+  for (const key in typesStore) {
+    const { types, store } = typesStore[key];
+    const result = types.check(value);
+
+    if (result.success) {
+      store.update(result.data);
+      return { success: true, data: store.getValue() };
     }
-
-    throwError('GolguaManager.searchMaker');
   }
 
-  /**
-   * @description Find a State instance with StateClass
-   * @param {State} StateClass state class
-   * @param {String} id ID owned by State instance
-   * @return {State}
-   */
-  searchState(StateClass, id = null) {
-    if (State.isPrototypeOf(StateClass)) {
-      for (const key in this.states) {
-        const info = this.states[key];
+  return { success: false, data: value };
+};
 
-        if (info.state instanceof StateClass) {
-          if (!id || id === info.parent.__id) {
-            return info.state;
-          }
-        }
-      }
-    }
-
-    throwError('GolguaManager.searchState');
+/**
+ * @description Update a specific type of value
+ * @param {GolguaTypes} types Golgua Types to update
+ * @param {Any} value update value
+ * @return {{ success:Boolean, data:Any }}
+ */
+export const updateWithTypes = (types, value) => {
+  if (types instanceof TypesBase) {
+    throw new Error(
+      'The value of the passed argument is invalid. Please pass GolguaTypesInstance.'
+    );
   }
 
-  /**
-   * @description Get all State instances of StateClass passed in
-   * @param {State} StateClass state class
-   * @param {String} id ID owned by State instance
-   * @return {State[]}
-   */
-  searchStateAll(StateClass, id = null) {
-    const list = [];
+  const typesStore = GolguaTypesStore[types.type];
 
-    for (const key in this.states) {
-      const info = this.states[key];
-      if (info.state instanceof StateClass) {
-        if (!id || id === info.parent.__id) {
-          list.push(info.state);
-        }
-      }
-    }
-
-    return list;
+  if (!typesStore && !typesStore[types.__id__]) {
+    throw new Error('It seems to be a type that has not been registered yet.');
   }
 
-  /**
-   * @description Get Maker or State from the passed value
-   * @param {String} id unique id
-   * @return {Maker|State|null}
-   */
-  searchById(id) {
-    if (this.makers[id]) return this.makers[id];
-    else if (this.states[id]) return this.states[id];
+  const { store } = typesStore[types.__id__];
+  const result = types.check(value);
 
-    return null;
-  }
-}
-
-export const GolguaManager = new GolguaClass();
+  if (result.success) {
+    store.update(result.data);
+    return { success: true, data: store.getValue() };
+  } else return result;
+};

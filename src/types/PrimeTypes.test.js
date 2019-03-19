@@ -3,6 +3,8 @@ import chai from 'chai';
 
 const assert = chai.assert;
 
+/* eslint-env mocha */
+
 describe('Primitive Types', () => {
   context('String Types', () => {
     context('default value', () => {
