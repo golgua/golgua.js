@@ -1,7 +1,7 @@
 import * as $$ from './Funcs';
 import chai from 'chai';
 
-/* eslint-disable */
+/* eslint-env mocha */
 
 const assert = chai.assert;
 

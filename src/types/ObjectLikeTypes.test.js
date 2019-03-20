@@ -1,4 +1,4 @@
-import { Types } from './types';
+import { StringTypes, NumberTypes, BooleanTypes } from './PrimeTypes';
 import { ObjectTypes, ArrayTypes } from './ObjectLikeTypes';
 import chai from 'chai';
 
@@ -7,11 +7,40 @@ const assert = chai.assert;
 /* eslint-env mocha */
 
 describe('ObjectLikeTypes', () => {
-  context('ObjectTypes', () => {
+  describe('ObjectTypes', () => {
     const types = {
-      text: Types.string({ pattern: v => v.length < 10 }),
-      id: Types.number(),
+      text: new StringTypes({
+        default_value: 'Hello World!',
+        proc: s => s.slice(0, 9),
+      }),
+      id: new NumberTypes({ default_value: 0, proc: id => (id < 10 ? id : 0) }),
     };
+    let objTypes;
+    let normalObjTypes;
+
+    before(() => {
+      objTypes = new ObjectTypes({
+        types,
+        default_value: { num: 1000, str: 'test' },
+        proc: v => ({ num: v.id, str: v.text }),
+      });
+      normalObjTypes = new ObjectTypes({ types });
+    });
+
+    context('Class Variable', () => {
+      it('have them', () => {
+        const keys = [
+          'id',
+          'default_value',
+          'proc',
+          'empty',
+          'types',
+          'kind',
+        ].map(s => `__${s}__`);
+
+        assert.hasAllKeys(objTypes, keys);
+      });
+    });
 
     context('types property', () => {
       it('can set', () => {
@@ -23,152 +52,112 @@ describe('ObjectLikeTypes', () => {
         assert.throw(() => new ObjectTypes({ types: 1 }));
         assert.throw(() => new ObjectTypes({ types: {} }));
         assert.throw(() => new ObjectTypes({ types: { ms: 'test' } }));
-        assert.throw(() => new ObjectTypes({ types: Types.string() }));
+        assert.throw(() => new ObjectTypes({ types: new StringTypes({}) }));
       });
     });
 
     context('default value', () => {
       it('can set', () => {
-        const nullObjTypes = new ObjectTypes({ types });
-        const objTypes = new ObjectTypes({
-          types,
-          default_value: { text: 'test', id: 1000 },
+        assert.deepEqual(normalObjTypes.defaultValue(), {
+          text: 'Hello World!',
+          id: 0,
         });
-        const emptyObjTypes = new ObjectTypes({
-          types,
-          empty: true,
-          default_value: {},
-        });
-
-        assert.isNull(nullObjTypes.defaultValue());
-        assert.deepEqual(objTypes.defaultValue(), { text: 'test', id: 1000 });
-        assert.deepEqual(emptyObjTypes.defaultValue(), {});
-      });
-
-      it("can't set", () => {
-        assert.throw(() => new ObjectTypes({ types, nullable: false }));
-        assert.throw(() => new ObjectTypes({ types, default_value: {} }));
-        assert.throw(
-          () => new ObjectTypes({ types, default_value: { text: '' } })
-        );
-        assert.throw(
-          () => new ObjectTypes({ types, default_value: { id: 0 } })
-        );
+        assert.deepEqual(objTypes.defaultValue(), { str: 'test', num: 1000 });
       });
     });
 
     context('check function', () => {
-      let objTypes;
-      let emptyObjTypes;
+      it('return check result and proc data', () => {
+        const value = { id: 1000, text: 'Test Text!!!' };
+        const true_result1 = normalObjTypes.check(value);
+        const false_result1 = normalObjTypes.check('bad value');
+        const true_result2 = objTypes.check(value);
+        const false_result2 = objTypes.check('bad value');
 
-      before(() => {
-        objTypes = new ObjectTypes({ types });
-        emptyObjTypes = new ObjectTypes({
-          types,
-          empty: true,
-          nullable: false,
-          default_value: {},
+        assert.deepEqual(true_result1, {
+          success: true,
+          data: { id: 0, text: 'Test Text' },
         });
-      });
-
-      it('when True', () => {
-        assert.isTrue(objTypes.check({ text: 'hello', id: 82 }));
-        assert.isTrue(objTypes.check(null));
-        assert.isTrue(emptyObjTypes.check({}));
-      });
-
-      it('when False', () => {
-        assert.isFalse(objTypes.check({}));
-        assert.isFalse(objTypes.check({ text: '0123456789', id: 13 }));
-      });
-
-      it('when throw error', () => {
-        assert.throw(() => objTypes.check(10));
-        assert.throw(() => objTypes.check({ text: 'hello' }));
-        assert.throw(() => objTypes.check({ id: 13 }));
-        assert.throw(() => emptyObjTypes.check(null));
+        assert.deepEqual(false_result1, { success: false, data: 'bad value' });
+        assert.deepEqual(true_result2, {
+          success: true,
+          data: { num: 0, str: 'Test Text' },
+        });
+        assert.deepEqual(false_result2, { success: false, data: 'bad value' });
       });
     });
   });
 
-  context('ArrayTypes', () => {
-    const types = Types.string({ pattern: v => v.length < 10 });
+  describe('ArrayTypes', () => {
+    const types = new StringTypes({
+      default_value: 'Hello World!',
+      proc: s => s.slice(0, 5),
+    });
+    let arrayTypes;
+    let normalArrayTypes;
+
+    before(() => {
+      arrayTypes = new ArrayTypes({
+        types,
+        default_value: 'Default',
+        proc: v => v.join(','),
+      });
+      normalArrayTypes = new ArrayTypes({ types });
+    });
+
+    context('Class Variable', () => {
+      it('have them', () => {
+        const keys = [
+          'id',
+          'default_value',
+          'proc',
+          'empty',
+          'types',
+          'kind',
+        ].map(s => `__${s}__`);
+
+        assert.hasAllKeys(arrayTypes, keys);
+      });
+    });
 
     context('types property', () => {
       it('can set', () => {
-        const arrayTypes = new ArrayTypes({ types });
         assert.instanceOf(arrayTypes, ArrayTypes);
       });
 
       it("can't set", () => {
         assert.throw(() => new ArrayTypes({ types: 0 }));
+        assert.throw(() => new ArrayTypes({ types: '' }));
         assert.throw(() => new ArrayTypes({ types: [] }));
         assert.throw(() => new ArrayTypes({ types: null }));
-        assert.throw(() => new ArrayTypes({ types: { ms: Types.string() } }));
       });
     });
 
     context('default value', () => {
       it('can set', () => {
-        const nullArrayTypes = new ArrayTypes({ types });
-        const arrayTypes = new ArrayTypes({
-          types,
-          default_value: ['test', 'test2'],
-        });
-        const emptyArrayTypes = new ArrayTypes({
-          types,
-          empty: true,
-          default_value: [],
-        });
-
-        assert.isNull(nullArrayTypes.defaultValue());
-        assert.deepEqual(arrayTypes.defaultValue(), ['test', 'test2']);
-        assert.deepEqual(emptyArrayTypes.defaultValue(), []);
-      });
-
-      it("can't set", () => {
-        assert.throw(() => new ArrayTypes({ types, default_value: [] }));
-        assert.throw(() => new ArrayTypes({ types, default_value: 0 }));
-        assert.throw(() => new ArrayTypes({ types, default_value: {} }));
-        assert.throw(() => new ArrayTypes({ types, nullable: false }));
-        assert.throw(
-          () => new ArrayTypes({ types, default_value: ['0123456789'] })
-        );
+        assert.deepEqual(arrayTypes.defaultValue(), 'Default');
+        assert.deepEqual(normalArrayTypes.defaultValue(), ['Hello World!']);
       });
     });
 
     context('check function', () => {
-      let arrayTypes;
-      let emptyArrayTypes;
+      it('return check result and proc data', () => {
+        const value = ['Test@Text', 'Hello World!'];
+        const true_result1 = normalArrayTypes.check(value);
+        const false_result1 = normalArrayTypes.check('bad value');
+        const true_result2 = arrayTypes.check(value);
+        const false_result2 = arrayTypes.check('bad value');
 
-      before(() => {
-        arrayTypes = new ArrayTypes({ types });
-        emptyArrayTypes = new ArrayTypes({
-          types,
-          empty: true,
-          nullable: false,
-          pattern: v => v.length < 1,
-          default_value: [],
+        assert.deepEqual(true_result1, {
+          success: true,
+          data: ['Test@', 'Hello'],
         });
-      });
-
-      it('when True', () => {
-        assert.isTrue(arrayTypes.check(['test']));
-        assert.isTrue(arrayTypes.check(null));
-        assert.isTrue(emptyArrayTypes.check([]));
-      });
-
-      it('when False', () => {
-        assert.isFalse(arrayTypes.check([]));
-        assert.isFalse(arrayTypes.check(['0123456789']));
-        assert.isFalse(emptyArrayTypes.check(['1', '2']));
-      });
-
-      it('when throw error', () => {
-        assert.throw(() => arrayTypes.check(123));
-        assert.throw(() => arrayTypes.check([123]));
-        assert.throw(() => arrayTypes.check(['test', 123]));
-        assert.throw(() => emptyArrayTypes.check(null));
+        assert.deepEqual(false_result1, { success: false, data: 'bad value' });
+        assert.deepEqual(true_result2, {
+          success: true,
+          data: 'Test@,Hello',
+        });
+        assert.deepEqual(false_result2, { success: false, data: 'bad value' });
       });
     });
   });

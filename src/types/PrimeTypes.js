@@ -11,7 +11,7 @@ class PrimeTypes extends TypesBase {
    */
   check(value) {
     if (this.isTypes(value)) {
-      const data = this.__proc ? this.__proc(value) : value;
+      const data = this.__proc__ ? this.__proc__(value) : value;
       return { success: true, data };
     }
 

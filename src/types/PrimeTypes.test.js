@@ -6,140 +6,149 @@ const assert = chai.assert;
 /* eslint-env mocha */
 
 describe('Primitive Types', () => {
-  context('String Types', () => {
+  describe('String Types', () => {
+    let strTypes;
+    let normalStrTypes;
+
+    before(() => {
+      strTypes = new StringTypes({
+        proc: v => v.length,
+        default_value: 'Hello World!',
+      });
+      normalStrTypes = new StringTypes({});
+    });
+
+    context('Class Variable', () => {
+      it('have them', () => {
+        const keys = [
+          'id',
+          'default_value',
+          'proc',
+          'empty',
+          'types',
+          'kind',
+        ].map(s => `__${s}__`);
+
+        assert.hasAllKeys(strTypes, keys);
+        assert.hasAllKeys(normalStrTypes, keys);
+      });
+    });
+
     context('default value', () => {
       it('can set', () => {
-        const nullStrTypes = new StringTypes({});
-        const strTypes = new StringTypes({ default_value: 'setting value.' });
-
-        assert.isNull(nullStrTypes.defaultValue());
-        assert.equal(strTypes.defaultValue(), 'setting value.');
-      });
-
-      it("can't set", () => {
-        assert.throw(() => new StringTypes({ default_value: 0 }));
-        assert.throw(() => new StringTypes({ default_value: false }));
-        assert.throw(() => new StringTypes({ nullable: false }));
+        assert.isNull(normalStrTypes.defaultValue());
+        assert.equal(strTypes.defaultValue(), 'Hello World!');
       });
     });
 
     context('check function', () => {
-      let strTypes;
-      let notNullStrTypes;
+      it('return check result and proc data', () => {
+        const true_result1 = normalStrTypes.check('string');
+        const false_result1 = normalStrTypes.check(1000);
+        const true_result2 = strTypes.check('string');
+        const false_result2 = strTypes.check(1000);
 
-      before(() => {
-        strTypes = new StringTypes({ pattern: v => v.length < 10 });
-        notNullStrTypes = new StringTypes({
-          nullable: false,
-          default_value: '',
-        });
-      });
-
-      it('when True', () => {
-        assert.isTrue(strTypes.check('str'));
-        assert.isTrue(strTypes.check(null));
-      });
-
-      it('when False', () => {
-        assert.isFalse(strTypes.check('0123456789'));
-      });
-
-      it('when throw error', () => {
-        assert.throw(() => strTypes.check(0));
-        assert.throw(() => strTypes.check(false));
-        assert.throw(() => notNullStrTypes.check(null));
+        assert.deepEqual(true_result1, { success: true, data: 'string' });
+        assert.deepEqual(true_result2, { success: true, data: 6 });
+        assert.deepEqual(false_result1, { success: false, data: 1000 });
+        assert.deepEqual(false_result2, { success: false, data: 1000 });
       });
     });
   });
 
-  context('Number Types', () => {
+  describe('Number Types', () => {
+    let numTypes;
+    let normalNumTypes;
+
+    before(() => {
+      numTypes = new NumberTypes({ proc: v => `${v}`, default_value: '1000' });
+      normalNumTypes = new NumberTypes({});
+    });
+
+    context('Class Variable', () => {
+      it('have them', () => {
+        const keys = [
+          'id',
+          'default_value',
+          'proc',
+          'empty',
+          'types',
+          'kind',
+        ].map(s => `__${s}__`);
+
+        assert.hasAllKeys(numTypes, keys);
+        assert.hasAllKeys(normalNumTypes, keys);
+      });
+    });
+
     context('default value', () => {
       it('can set', () => {
-        const nullNumTypes = new NumberTypes({});
-        const numTypes = new NumberTypes({ default_value: 1000 });
-
-        assert.isNull(nullNumTypes.defaultValue());
-        assert.equal(numTypes.defaultValue(), 1000);
-      });
-
-      it("can't set", () => {
-        assert.throw(() => new NumberTypes({ default_value: '' }));
-        assert.throw(() => new NumberTypes({ default_value: false }));
-        assert.throw(() => new NumberTypes({ nullable: false }));
+        assert.isNull(normalNumTypes.defaultValue());
+        assert.equal(numTypes.defaultValue(), '1000');
       });
     });
 
     context('check function', () => {
-      let numTypes;
-      let notNullNumTypes;
+      it('return check result and proc data', () => {
+        const true_result1 = normalNumTypes.check(1000);
+        const false_result1 = normalNumTypes.check('test');
+        const true_result2 = numTypes.check(1000);
+        const false_result2 = numTypes.check('test');
 
-      before(() => {
-        numTypes = new NumberTypes({ pattern: v => v < 1000 });
-        notNullNumTypes = new NumberTypes({
-          nullable: false,
-          default_value: 0,
-        });
-      });
-
-      it('when True', () => {
-        assert.isTrue(numTypes.check(100));
-        assert.isTrue(numTypes.check(null));
-      });
-
-      it('when False', () => {
-        assert.isFalse(numTypes.check(100000));
-      });
-
-      it('when throw error', () => {
-        assert.throw(() => numTypes.check(''));
-        assert.throw(() => numTypes.check(false));
-        assert.throw(() => notNullNumTypes.check(null));
+        assert.deepEqual(true_result1, { success: true, data: 1000 });
+        assert.deepEqual(true_result2, { success: true, data: '1000' });
+        assert.deepEqual(false_result1, { success: false, data: 'test' });
+        assert.deepEqual(false_result2, { success: false, data: 'test' });
       });
     });
   });
 
-  context('Boolean Types', () => {
+  describe('Boolean Types', () => {
+    let boolTypes;
+    let normalBoolTypes;
+
+    before(() => {
+      boolTypes = new BooleanTypes({
+        proc: v => `${v}`,
+        default_value: 'false',
+      });
+      normalBoolTypes = new BooleanTypes({});
+    });
+
+    context('Class Variable', () => {
+      it('have them', () => {
+        const keys = [
+          'id',
+          'default_value',
+          'proc',
+          'empty',
+          'types',
+          'kind',
+        ].map(s => `__${s}__`);
+
+        assert.hasAllKeys(boolTypes, keys);
+        assert.hasAllKeys(normalBoolTypes, keys);
+      });
+    });
+
     context('default value', () => {
       it('can set', () => {
-        const nullBoolTypes = new BooleanTypes({});
-        const boolTypes = new BooleanTypes({ default_value: false });
-
-        assert.isNull(nullBoolTypes.defaultValue());
-        assert.equal(boolTypes.defaultValue(), false);
-      });
-
-      it("can't set", () => {
-        assert.throw(() => new BooleanTypes({ default_value: 0 }));
-        assert.throw(() => new BooleanTypes({ default_value: '' }));
-        assert.throw(() => new BooleanTypes({ nullable: false }));
+        assert.isNull(normalBoolTypes.defaultValue());
+        assert.equal(boolTypes.defaultValue(), 'false');
       });
     });
 
     context('check function', () => {
-      let boolTypes;
-      let notNullBoolTypes;
+      it('return check result and proc data', () => {
+        const true_result1 = normalBoolTypes.check(true);
+        const false_result1 = normalBoolTypes.check('test');
+        const true_result2 = boolTypes.check(true);
+        const false_result2 = boolTypes.check('test');
 
-      before(() => {
-        boolTypes = new BooleanTypes({ pattern: v => v === false });
-        notNullBoolTypes = new BooleanTypes({
-          nullable: false,
-          default_value: false,
-        });
-      });
-
-      it('when True', () => {
-        assert.isTrue(boolTypes.check(false));
-        assert.isTrue(boolTypes.check(null));
-      });
-
-      it('when False', () => {
-        assert.isFalse(boolTypes.check(true));
-      });
-
-      it('when throw error', () => {
-        assert.throw(() => boolTypes.check(0));
-        assert.throw(() => boolTypes.check(''));
-        assert.throw(() => notNullBoolTypes.check(null));
+        assert.deepEqual(true_result1, { success: true, data: true });
+        assert.deepEqual(true_result2, { success: true, data: 'true' });
+        assert.deepEqual(false_result1, { success: false, data: 'test' });
+        assert.deepEqual(false_result2, { success: false, data: 'test' });
       });
     });
   });

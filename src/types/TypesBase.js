@@ -7,11 +7,13 @@ export class TypesBase {
   /**
    * @param {Object} param types property
    */
-  constructor({ default_value = null, empty, types, proc }) {
-    this.__default_value = $$.clone(default_value);
-    this.__proc = typeof proc === 'function' ? proc : null;
-    this.__empty = !!empty;
-    this.__types = types;
+  constructor({ default_value = null, empty, types, proc, kind }) {
+    this.__id__ = $$.getUniqueId();
+    this.__default_value__ = $$.clone(default_value);
+    this.__proc__ = typeof proc === 'function' ? proc : null;
+    this.__empty__ = !!empty;
+    this.__types__ = types;
+    this.__kind__ = kind;
   }
 
   /**
@@ -29,6 +31,6 @@ export class TypesBase {
    * @return {any}
    */
   defaultValue() {
-    return $$.clone(this.__default_value);
+    return $$.clone(this.__default_value__);
   }
 }

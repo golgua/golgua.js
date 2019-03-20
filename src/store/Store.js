@@ -16,11 +16,9 @@ export class GolguaDataStore {
 
   /**
    * @description Reset state to the default value
-   * @return {Any}
    */
   reset() {
-    this.state = this.types.defaultValue();
-    return this.types.defaultValue();
+    this.state = this.default_value;
   }
 
   /**

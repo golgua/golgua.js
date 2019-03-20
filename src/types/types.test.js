@@ -2,6 +2,7 @@ import { Types } from './Types';
 import { StringTypes, NumberTypes, BooleanTypes } from './PrimeTypes';
 import { ObjectTypes, ArrayTypes } from './ObjectLikeTypes';
 import chai from 'chai';
+import { TypesBase } from './TypesBase';
 
 const assert = chai.assert;
 
@@ -17,5 +18,16 @@ describe('Types Test', () => {
       ObjectTypes
     );
     assert.instanceOf(Types.array({ types: Types.string() }), ArrayTypes);
+  });
+
+  it('inherits from TypesBase', () => {
+    assert.instanceOf(Types.string(), TypesBase);
+    assert.instanceOf(Types.number(), TypesBase);
+    assert.instanceOf(Types.boolean(), TypesBase);
+    assert.instanceOf(
+      Types.object({ types: { message: Types.string() } }),
+      TypesBase
+    );
+    assert.instanceOf(Types.array({ types: Types.string() }), TypesBase);
   });
 });

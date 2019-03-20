@@ -12,14 +12,14 @@ const GolguaTypesStore = {};
  */
 export const subscription = types => {
   if (types instanceof TypesBase) {
-    const typesStore = GolguaTypesStore[types.type] || {};
+    const typesStore = GolguaTypesStore[types.__kind__] || {};
     const typesID = types.__id__;
 
     typesStore[typesID] = {
       types,
       store: new GolguaDataStore(types),
     };
-    GolguaTypesStore[types.type] = typesStore;
+    GolguaTypesStore[types.__kind__] = typesStore;
   } else {
     throw new Error(
       'The value of the passed argument is invalid. Please pass GolguaTypesInstance.'
@@ -33,8 +33,8 @@ export const subscription = types => {
  * @return {{ success:Boolean, data:Any }}
  */
 export const update = value => {
-  if (value === null) {
-    throw new Error('null is not accepted as a value to update.');
+  if (value === null || value === undefined) {
+    throw new Error('null or undefined is not accepted as a value to update.');
   }
 
   const typesStore = GolguaTypesStore[typeof value];
@@ -61,13 +61,13 @@ export const update = value => {
  * @return {{ success:Boolean, data:Any }}
  */
 export const updateWithTypes = (types, value) => {
-  if (types instanceof TypesBase) {
+  if (!(types instanceof TypesBase)) {
     throw new Error(
       'The value of the passed argument is invalid. Please pass GolguaTypesInstance.'
     );
   }
 
-  const typesStore = GolguaTypesStore[types.type];
+  const typesStore = GolguaTypesStore[types.__kind__];
 
   if (!typesStore && !typesStore[types.__id__]) {
     throw new Error('It seems to be a type that has not been registered yet.');

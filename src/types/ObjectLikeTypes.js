@@ -12,12 +12,12 @@ export class ObjectTypes extends TypesBase {
     super(property);
 
     if (
-      $$.isObject(this.__types) &&
-      !$$.isEmpty(this.__types) &&
-      !(this.__types instanceof TypesBase)
+      $$.isObject(this.__types__) &&
+      !$$.isEmpty(this.__types__) &&
+      !(this.__types__ instanceof TypesBase)
     ) {
-      for (const key in this.__types) {
-        if (!(this.__types[key] instanceof TypesBase)) {
+      for (const key in this.__types__) {
+        if (!(this.__types__[key] instanceof TypesBase)) {
           throw new Error('ObjectTypes.typesMember');
         }
       }
@@ -34,7 +34,7 @@ export class ObjectTypes extends TypesBase {
   check(value) {
     if (
       !$$.isObject(value) ||
-      Object.keys(value).length !== Object.keys(this.__types)
+      Object.keys(value).length !== Object.keys(this.__types__).length
     ) {
       return { success: false, data: value };
     }
@@ -43,14 +43,18 @@ export class ObjectTypes extends TypesBase {
       return { success: true, data: {} };
     }
 
-    for (const key in this.__types) {
-      const types = this.__types[key];
+    let data = {};
+
+    for (const key in this.__types__) {
+      const types = this.__types__[key];
       const result = types.check(value[key]);
 
       if (!result.success) return { success: false, data: value };
+
+      data[key] = result.data;
     }
 
-    const data = this.__proc ? this.__proc(value) : value;
+    data = this.__proc__ ? this.__proc__(data) : data;
 
     return { success: true, data };
   }
@@ -60,17 +64,17 @@ export class ObjectTypes extends TypesBase {
    * @return {Object}
    */
   defaultValue() {
-    if (this.__default_value) return $$.clone(this.__default_value);
+    if (this.__default_value__) return $$.clone(this.__default_value__);
 
     const default_value = {};
 
-    for (const key in this.__types) {
-      default_value[key] = this.__types[key].defaultValue();
+    for (const key in this.__types__) {
+      default_value[key] = this.__types__[key].defaultValue();
     }
 
-    this.__default_value = default_value;
+    this.__default_value__ = default_value;
 
-    return $$.clone(this.__default_value);
+    return $$.clone(this.__default_value__);
   }
 }
 
@@ -84,10 +88,14 @@ export class ArrayTypes extends TypesBase {
   constructor(property) {
     super(property);
 
-    if (!(this.__types instanceof TypesBase)) {
-      throw new Error(
-        'The types of "ArrayTypes" must be Golgua Types Instance.'
-      );
+    if (!(this.__types__ instanceof TypesBase)) {
+      if ($$.isObject(this.__types__)) {
+        this.__types__ = new ObjectTypes({ types: this.__types__ });
+      } else {
+        throw new Error(
+          'The types of "ArrayTypes" must be Golgua Types Instance.'
+        );
+      }
     }
   }
 
@@ -102,12 +110,19 @@ export class ArrayTypes extends TypesBase {
         return { success: true, data: [] };
       }
 
-      for (const key in value) {
-        const result = this.__types.check(value[key]);
+      let data = [];
+
+      for (const i in value) {
+        const result = this.__types__.check(value[i]);
+
         if (!result.success) return { success: false, data: value };
+
+        data.push(result.data);
       }
 
-      return { success: true, data: this.__proc ? this.__proc(value) : value };
+      data = this.__proc__ ? this.__proc__(data) : data;
+
+      return { success: true, data };
     }
 
     return { success: false, data: value };
@@ -118,12 +133,12 @@ export class ArrayTypes extends TypesBase {
    * @return {Array}
    */
   defaultValue() {
-    if (this.__default_value) return $$.clone(this.__default_value);
+    if (this.__default_value__) return $$.clone(this.__default_value__);
 
-    const default_value = [this.__types.defaultValue()];
+    const default_value = [this.__types__.defaultValue()];
 
-    this.__default_value = default_value;
+    this.__default_value__ = default_value;
 
-    return this.__default_value;
+    return this.__default_value__;
   }
 }
