@@ -6,12 +6,13 @@ import * as $$ from '../funcs/Funcs';
 export class GolguaDataStore {
   /**
    * @param {GolguaTypes} types Golgua Types Instance
-   * @param {Any} defaultValue default value
+   * @param {String} name store key name
    */
-  constructor(types) {
+  constructor(types, name) {
     this.types = types;
     this.default_value = types.defaultValue();
     this.state = types.defaultValue();
+    this.name = name;
   }
 
   /**

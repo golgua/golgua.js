@@ -105,5 +105,3 @@ describe('other test', () => {
     });
   });
 });
-
-/* eslint-disable */

@@ -6,6 +6,9 @@ import { GolguaTypesStore } from '../store/TypesStore';
  * @param {String} name Store key name
  */
 export const subscription = (types, name) => {
+  if (typeof name !== 'string') {
+    throw new Error('Please set a name. This is required.');
+  }
   if (GolguaTypesStore.names.indexOf(name) !== -1) {
     throw new Error('It is already registered name.');
   }
@@ -59,7 +62,7 @@ export const update = value => {
     throw new Error('null or undefined is not accepted as a value to update.');
   }
 
-  return GolguaTypesStore.updateAllTypes();
+  return GolguaTypesStore.updateAllTypes(value);
 };
 
 /**

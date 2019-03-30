@@ -8,6 +8,13 @@ class TypesStore {
    * @description Initialize
    */
   constructor() {
+    this.reset();
+  }
+
+  /**
+   * @description Restore Store to its initial state
+   */
+  reset() {
     this.Stores = {};
     this.callback = null;
     this.names = [];
@@ -23,16 +30,6 @@ class TypesStore {
     store[types.__id__] = new GolguaDataStore(types, name);
     this.Stores[types.__kind__] = store;
     this.names.push(name);
-  }
-
-  /**
-   * @description
-   * @param {GolguaTypes} types Golgua Types Instance
-   * @return {GolguaDataStore}
-   */
-  getTypes(types) {
-    const kind_store = this.Stores[types.__kind__];
-    return kind_store ? kind_store[types.__id__] : null;
   }
 
   /**
@@ -114,7 +111,8 @@ class TypesStore {
     const kind_store = this.Stores[types.__kind__];
 
     if (kind_store && kind_store[types.__id__]) {
-      return kind_store[types.__id__].getValue();
+      const store = kind_store[types.__id__];
+      return { [store.name]: store.getValue() };
     }
 
     return null;

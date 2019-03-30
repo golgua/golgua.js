@@ -20,19 +20,14 @@ describe('Golgua Store Test', () => {
     });
 
     it('can set value', () => {
-      Store.update('updated text');
-      assert.deepEqual(Store.getValue(), 'updated text');
+      const result = Store.update('updated text');
+      assert.deepEqual({ success: true, data: 'updated text' }, result);
     });
 
     it('can set default value', () => {
       Store.update('updated text');
       Store.reset();
       assert.deepEqual(Store.getValue(), 'default value');
-    });
-
-    it('can save any value', () => {
-      Store.update(1000);
-      assert.deepEqual(Store.getValue(), 1000);
     });
   });
 });

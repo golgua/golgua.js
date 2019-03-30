@@ -87,11 +87,7 @@ export class ArrayTypes extends ObjectLikeTypes {
    * @return {Boolean}
    */
   check(value) {
-    if (
-      !Array.isArray(value) || // not array
-      ($$.isEmpty(value) && !this.__empty__) || // bad empty
-      $$.size(value) !== $$.size(this.__types__) // failed type
-    ) {
+    if (!Array.isArray(value) || ($$.isEmpty(value) && !this.__empty__)) {
       return { success: false, data: value };
     }
 

@@ -1,4 +1,4 @@
-import { StringTypes, NumberTypes, BooleanTypes } from './PrimeTypes';
+import { StringTypes, NumberTypes } from './PrimeTypes';
 import { ObjectTypes, ArrayTypes } from './ObjectLikeTypes';
 import chai from 'chai';
 
@@ -53,16 +53,6 @@ describe('ObjectLikeTypes', () => {
         assert.throw(() => new ObjectTypes({ types: {} }));
         assert.throw(() => new ObjectTypes({ types: { ms: 'test' } }));
         assert.throw(() => new ObjectTypes({ types: new StringTypes({}) }));
-      });
-    });
-
-    context('default value', () => {
-      it('can set', () => {
-        assert.deepEqual(normalObjTypes.defaultValue(), {
-          text: 'Hello World!',
-          id: 0,
-        });
-        assert.deepEqual(objTypes.defaultValue(), { str: 'test', num: 1000 });
       });
     });
 
@@ -130,13 +120,6 @@ describe('ObjectLikeTypes', () => {
         assert.throw(() => new ArrayTypes({ types: '' }));
         assert.throw(() => new ArrayTypes({ types: [] }));
         assert.throw(() => new ArrayTypes({ types: null }));
-      });
-    });
-
-    context('default value', () => {
-      it('can set', () => {
-        assert.deepEqual(arrayTypes.defaultValue(), 'Default');
-        assert.deepEqual(normalArrayTypes.defaultValue(), ['Hello World!']);
       });
     });
 
