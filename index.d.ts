@@ -1,29 +1,28 @@
-declare module "golgua" {
+declare module 'golgua' {
   export = Golgua;
 }
 
 declare namespace Golgua {
   var Types: {
-    string: (property: TypesProperty<string>) => TypesInstance<string>;
-    number: (property: TypesProperty<number>) => TypesInstance<number>;
-    boolean: (property: TypesProperty<boolean>) => TypesInstance<boolean>;
+    string: (property?: TypesProperty<string>) => TypesInstance<string>;
+    number: (property?: TypesProperty<number>) => TypesInstance<number>;
+    boolean: (property?: TypesProperty<boolean>) => TypesInstance<boolean>;
     object: (
-      property: TypesObjectLikeProperty<object>
+      property?: TypesObjectLikeProperty<object>
     ) => TypesInstance<object>;
     array: (
-      property: TypesObjectLikeProperty<Array<any>>
+      property?: TypesObjectLikeProperty<Array<any>>
     ) => TypesInstance<Array<any>>;
   };
 
   interface TypesInstance<BaseType> {
-    default_value(): BaseType;
+    defaultValue(): BaseType;
     check(value: any): boolean;
   }
 
   interface TypesProperty<BaseType> {
     default_value?: BaseType;
-    pattern?: (check_value: any) => boolean;
-    nullable?: boolean;
+    proc?: (value: any) => any;
   }
 
   interface TypesObjectLikeProperty<BaseType> extends TypesProperty<BaseType> {
@@ -31,29 +30,10 @@ declare namespace Golgua {
     empty?: boolean;
   }
 
-  class State<BaseType> {
-    protected types: BaseType | { [key: string]: TypesInstance<BaseType> };
+  type updateResult = { success: boolean; data: any }
 
-    state: BaseType | null;
-
-    init(): void | Promise<any>;
-    willUpdate(props: BaseType): BaseType;
-    didUpdate(): void;
-    updatedCatch(value: any, key: string | number, props: BaseType);
-    defaultValue(): BaseType;
-  }
-
-  interface Maker {
-    update(value: any): void;
-    updateWithState(StateClass: State<any>, value: any): void;
-    getStateValue(): any;
-    listen(cb: (updated_value: any) => void): void;
-    listenWithState(
-      StateClass: State<any>,
-      cb: (updated_value: any) => void
-    ): void;
-  }
-
-  function createMaker(StateClass: State<any>): Maker;
-  function searchMaker(StateClass: State<any>): Maker;
+  function subscription(types: TypesInstance<any>);
+  function update(input_value: any): updateResult;
+  function udateWithTypes(types: TypesInstance<any>, input_value: any ): updateResult;
+  function setUpdateListener( callback: (store_value: object) => void );
 }

@@ -41,14 +41,6 @@ export const size = value => {
   }
 };
 
-export const hasKey = (value, key) => {
-  try {
-    return key in value;
-  } catch (e) {
-    return false;
-  }
-};
-
 export const isObject = value => {
   return Object.prototype.toString.call(value) === '[object Object]';
 };

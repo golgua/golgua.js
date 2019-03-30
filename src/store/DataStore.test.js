@@ -1,4 +1,4 @@
-import { GolguaDataStore } from './Store';
+import { GolguaDataStore } from './DataStore';
 import { StringTypes } from '../types/PrimeTypes';
 import chai from 'chai';
 

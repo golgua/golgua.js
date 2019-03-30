@@ -1,11 +1,11 @@
-import * as $$ from '../funcs/funcs';
+import * as $$ from '../funcs/Funcs';
 
 /**
  * @description Golgua Store Class
  */
 export class GolguaDataStore {
   /**
-   * @param {Types} types Golgua Types Instance
+   * @param {GolguaTypes} types Golgua Types Instance
    * @param {Any} defaultValue default value
    */
   constructor(types) {
@@ -24,9 +24,14 @@ export class GolguaDataStore {
   /**
    * @description update state
    * @param {any} value update value
+   * @return {{ success:Boolean, data:any }}
    */
   update(value) {
-    this.state = $$.clone(value);
+    const { success, data } = this.types.check(value);
+
+    if (success) this.state = $$.clone(data);
+
+    return { success, data };
   }
 
   /**

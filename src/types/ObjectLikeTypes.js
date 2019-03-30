@@ -2,9 +2,14 @@ import * as $$ from '../funcs/Funcs';
 import { TypesBase } from './TypesBase';
 
 /**
+ * @description Super Class
+ */
+export class ObjectLikeTypes extends TypesBase {}
+
+/**
  * @description Types Class to check for Object type
  */
-export class ObjectTypes extends TypesBase {
+export class ObjectTypes extends ObjectLikeTypes {
   /**
    * @param {Object} property types property
    */
@@ -32,15 +37,10 @@ export class ObjectTypes extends TypesBase {
    * @return {Boolean}
    */
   check(value) {
-    if (
-      !$$.isObject(value) ||
-      Object.keys(value).length !== Object.keys(this.__types__).length
-    ) {
+    if (!$$.isObject(value)) return { success: false, data: value };
+    if ($$.isEmpty(value)) return { success: this.__empty__, data: {} };
+    if ($$.size(value) !== $$.size(this.__types__)) {
       return { success: false, data: value };
-    }
-
-    if ($$.isEmpty(value) && this.__empty) {
-      return { success: true, data: {} };
     }
 
     let data = {};
@@ -58,30 +58,12 @@ export class ObjectTypes extends TypesBase {
 
     return { success: true, data };
   }
-
-  /**
-   * @description return default value
-   * @return {Object}
-   */
-  defaultValue() {
-    if (this.__default_value__) return $$.clone(this.__default_value__);
-
-    const default_value = {};
-
-    for (const key in this.__types__) {
-      default_value[key] = this.__types__[key].defaultValue();
-    }
-
-    this.__default_value__ = default_value;
-
-    return $$.clone(this.__default_value__);
-  }
 }
 
 /**
  * @description Types Class to check for Array type
  */
-export class ArrayTypes extends TypesBase {
+export class ArrayTypes extends ObjectLikeTypes {
   /**
    * @param {Object} property types property
    */
@@ -105,40 +87,26 @@ export class ArrayTypes extends TypesBase {
    * @return {Boolean}
    */
   check(value) {
-    if (Array.isArray(value)) {
-      if ($$.isEmpty(value) && this.__empty) {
-        return { success: true, data: [] };
-      }
-
-      let data = [];
-
-      for (const i in value) {
-        const result = this.__types__.check(value[i]);
-
-        if (!result.success) return { success: false, data: value };
-
-        data.push(result.data);
-      }
-
-      data = this.__proc__ ? this.__proc__(data) : data;
-
-      return { success: true, data };
+    if (
+      !Array.isArray(value) || // not array
+      ($$.isEmpty(value) && !this.__empty__) || // bad empty
+      $$.size(value) !== $$.size(this.__types__) // failed type
+    ) {
+      return { success: false, data: value };
     }
 
-    return { success: false, data: value };
-  }
+    let data = [];
 
-  /**
-   * @description return default value
-   * @return {Array}
-   */
-  defaultValue() {
-    if (this.__default_value__) return $$.clone(this.__default_value__);
+    for (const i in value) {
+      const result = this.__types__.check(value[i]);
 
-    const default_value = [this.__types__.defaultValue()];
+      if (!result.success) return { success: false, data: value };
 
-    this.__default_value__ = default_value;
+      data.push(result.data);
+    }
 
-    return this.__default_value__;
+    data = this.__proc__ ? this.__proc__(data) : data;
+
+    return { success: true, data };
   }
 }
