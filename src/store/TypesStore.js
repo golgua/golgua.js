@@ -1,5 +1,3 @@
-import { GolguaDataStore } from './DataStore';
-
 /**
  * @description Store Class managing Golgua Types
  */
@@ -15,107 +13,56 @@ class TypesStore {
    * @description Restore Store to its initial state
    */
   reset() {
-    this.Stores = {};
-    this.callback = null;
-    this.names = [];
+    this.Store = {};
+    this.Types = {};
+    this.callbacks = {
+      fail: [],
+      updated: [],
+    };
+  }
+
+  /**
+   * @description set event callback
+   * @param {'updated'|'fail'} event event type
+   * @param {Function} cb callback
+   */
+  addCallback(event, cb) {
+    this.callbacks[event].push(cb);
   }
 
   /**
    * @description Register Golgua Types to subscribe
    * @param {GolguaTypes} types Golgua Types Instance
-   * @param {String} name Store key name
    */
-  setTypes(types, name) {
-    const store = this.Stores[types.__kind__] || {};
-    store[types.__id__] = new GolguaDataStore(types, name);
-    this.Stores[types.__kind__] = store;
-    this.names.push(name);
-  }
-
-  /**
-   * @description Set callback to be executed at Store update
-   * @param {Function} cb callback
-   */
-  setCallback(cb) {
-    this.callback = cb;
+  setTypes(types) {
+    const kind_store = this.Types[types.__kind__] || {};
+    kind_store[types.__id__] = types;
+    this.Types[types.__kind__] = kind_store;
+    this.Store[types.__name__] = types.defaultValue();
   }
 
   /**
    * @description update store value
    * @param {any} value update value
-   * @return {{ success: Boolean, data:any }}
    */
-  updateAllTypes(value) {
-    const kind = typeof value;
-    const kind_store = this.Stores[kind];
-
-    if (!kind_store) return { success: false, data: value };
+  update(value) {
+    const kind_store = this.Types[typeof value];
 
     for (const type_id in kind_store) {
-      const { success, data } = kind_store[type_id].update(value);
-
-      if (success) {
-        if (this.callback) this.callback(this.getStoreValue());
-        return { success: true, data };
-      }
+      if (kind_store[type_id].update(value)) return;
     }
 
-    return { success: false, data: value };
+    this.callbacks.fail.forEach(cb => cb(value));
   }
 
   /**
-   * @description Update passed types
-   * @param {GolguaTypes} types Golgua Types Instance
-   * @param {any} value update value
-   * @return {{ success: Boolean, data:any }}
+   * @description update store value
+   * @param {String} name types name
+   * @param {Any} value updated value
    */
-  updateTypes(types, value) {
-    const kind = typeof value;
-    const kind_store = this.Stores[kind];
-    const store = kind_store[types.__id__];
-
-    if (!store) return { success: false, data: value };
-
-    const result = store.update(value);
-
-    if (result.success && this.callback) this.callback(this.getStoreValue());
-
-    return result;
-  }
-
-  /**
-   * @description Return All Types Store Value
-   * @return {Object}
-   */
-  getStoreValue() {
-    const store_value = {};
-
-    for (const kind in this.Stores) {
-      const kind_store = this.Stores[kind];
-
-      for (const types_id in kind_store) {
-        const store = kind_store[types_id];
-        store_value[store.name] = store.getValue();
-      }
-    }
-
-    return store_value;
-  }
-
-  /**
-   * @description Return Store value of passed GolguaTypes
-   * @param {GolguaTypes} types Golgua Types instance\
-   * @return {Any|Null}
-   */
-  getStoreValueWithTypes(types) {
-    const kind_store = this.Stores[types.__kind__];
-
-    if (kind_store && kind_store[types.__id__]) {
-      const store = kind_store[types.__id__];
-      return { [store.name]: store.getValue() };
-    }
-
-    return null;
+  updateStoreValue(name, value) {
+    this.Store[name] = value;
+    this.callbacks.updated.forEach(cb => cb(value, name, this.Store));
   }
 }
 

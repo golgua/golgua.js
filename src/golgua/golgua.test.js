@@ -1,9 +1,10 @@
 import { Types } from '../types/Types';
+import { GolguaTypesStore } from '../store/TypesStore';
 import {
-  subscription,
   update,
-  updateWithTypes,
-  setUpdateListener,
+  subscription,
+  getStoreValue,
+  addEventListener,
 } from './Golgua';
 import chai from 'chai';
 
@@ -13,18 +14,24 @@ const assert = chai.assert;
 
 describe('Golgua API Test', () => {
   const types = Types.object({
+    name: 'user',
     types: {
       string: Types.string(),
       number: Types.number(),
       boolean: Types.boolean(),
       array: Types.array({ types: Types.string() }),
     },
-    proc: v => ({
+    dispatch: (store, v) => ({
       name: v.string,
       age: v.number,
       male: v.boolean,
       task: v.array,
     }),
+  });
+
+  beforeEach(() => {
+    GolguaTypesStore.reset();
+    subscription(types);
   });
 
   context('subscription API', () => {
@@ -35,123 +42,104 @@ describe('Golgua API Test', () => {
 
     it('Throw Error', () => {
       assert.throw(() => subscription({}));
-      assert.throw(() => subscription(types));
+    });
+  });
+
+  context('getStoreValue function', () => {
+    it('returns state value', () => {
+      assert.deepEqual(getStoreValue(), { user: null });
     });
   });
 
   context('update API', () => {
-    before(() => subscription(types, 'update_api'));
-
     it('can update Store Value', () => {
-      const result = update({
+      update({
         string: 'Nick',
         number: 10,
         boolean: true,
         array: ['Buy shoes'],
       });
 
-      assert.deepEqual(
-        {
-          success: true,
-          data: { name: 'Nick', age: 10, male: true, task: ['Buy shoes'] },
-        },
-        result
-      );
+      assert.deepEqual(getStoreValue(), {
+        user: { name: 'Nick', age: 10, male: true, task: ['Buy shoes'] },
+      });
     });
 
     it("can't update Store Value", () => {
-      const result = update({
+      update({
         number: 'Nick',
         string: 10,
         array: true,
         boolean: ['Buy shoes'],
       });
 
-      assert.deepEqual(result, {
-        success: false,
-        data: {
-          number: 'Nick',
-          string: 10,
-          array: true,
-          boolean: ['Buy shoes'],
-        },
-      });
-    });
-  });
-
-  context('updateWithTypes API', () => {
-    before(() => subscription(types, 'update_with_types_api'));
-
-    it('can update Store Value', () => {
-      const result = updateWithTypes(types, {
-        string: 'Nick',
-        number: 10,
-        boolean: true,
-        array: ['Buy shoes'],
-      });
-
-      assert.deepEqual(
-        {
-          success: true,
-          data: { name: 'Nick', age: 10, male: true, task: ['Buy shoes'] },
-        },
-        result
-      );
-    });
-
-    it("can't update Store Value", () => {
-      const result = updateWithTypes(types, {
-        number: 'Nick',
-        string: 10,
-        array: true,
-        boolean: ['Buy shoes'],
-      });
-
-      assert.deepEqual(result, {
-        success: false,
-        data: {
-          number: 'Nick',
-          string: 10,
-          array: true,
-          boolean: ['Buy shoes'],
-        },
-      });
+      assert.deepEqual(getStoreValue(), { user: null });
     });
   });
 
   context('setUpdateListener API', () => {
-    before(() => subscription(types, 'user'));
-
-    it('will execute the configured callback', done => {
-      setUpdateListener(store_value => {
-        assert.deepEqual(store_value, {
-          user: { name: 'Nick', age: 10, male: true, task: ['Buy shoes'] },
+    context('When updated event', () => {
+      it('will execute the configured callback', done => {
+        addEventListener('updated', (value, type_name, store) => {
+          assert.deepEqual(store, { user: value });
+          assert.equal('user', type_name);
+          done();
         });
 
-        done();
+        update({
+          string: 'Nick',
+          number: 10,
+          boolean: true,
+          array: ['Buy shoes'],
+        });
       });
 
-      update({
-        string: 'Nick',
-        number: 10,
-        boolean: true,
-        array: ['Buy shoes'],
+      it('does not execute callbacks', () => {
+        addEventListener('updated', () => {
+          throw new Error('The callback should not be executed.');
+        });
+
+        update({
+          str: 'Nick',
+          num: 10,
+          bool: true,
+          array: ['Buy shoes'],
+        });
+
+        assert.ok('ok');
       });
     });
+    context('When fail event', () => {
+      it('will execute the configured callback', done => {
+        const update_value = {
+          number: 'Nick',
+          string: 10,
+          array: true,
+          boolean: ['Buy shoes'],
+        };
 
-    it('does not execute callbacks', () => {
-      setUpdateListener(() => {
-        throw new Error('The callback should not be executed.');
+        addEventListener('fail', value => {
+          assert.deepEqual(update_value, value);
+          done();
+        });
+
+        update(update_value);
       });
 
-      update({
-        str: 'Nick',
-        num: 10,
-        bool: true,
-        array: ['Buy shoes'],
-      });
+      it('does not execute callbacks', () => {
+        addEventListener('fail', () => {
+          throw new Error('The callback should not be executed.');
+        });
 
-      assert.ok('ok');
+        update({
+          string: 'Nick',
+          number: 10,
+          boolean: true,
+          array: ['Buy shoes'],
+        });
+
+        assert.ok('ok');
+      });
     });
   });
 });

@@ -3,32 +3,18 @@ import { TypesBase } from './TypesBase';
 /**
  * @description Super class of Primitive type
  */
-class PrimeTypes extends TypesBase {
-  /**
-   * @description Check type based on isTypes
-   * @param {any} value check value
-   * @return {Boolean}
-   */
-  check(value) {
-    if (this.isTypes(value)) {
-      const data = this.__proc__ ? this.__proc__(value) : value;
-      return { success: true, data };
-    }
-
-    return { success: false, data: value };
-  }
-}
+class PrimeTypes extends TypesBase {}
 
 /**
  * @description Types Class to check for Boolean type
  */
 export class StringTypes extends PrimeTypes {
   /**
-   * @description Define type check function
+   * @description Check type based on isTypes
    * @param {Any} value
    * @return {Boolean}
    */
-  isTypes(value) {
+  __check__(value) {
     return typeof value === 'string';
   }
 }
@@ -38,11 +24,11 @@ export class StringTypes extends PrimeTypes {
  */
 export class NumberTypes extends PrimeTypes {
   /**
-   * @description Define type check function
+   * @description Check type based on isTypes
    * @param {Any} value
    * @return {Boolean}
    */
-  isTypes(value) {
+  __check__(value) {
     return typeof value === 'number';
   }
 }
@@ -52,11 +38,11 @@ export class NumberTypes extends PrimeTypes {
  */
 export class BooleanTypes extends PrimeTypes {
   /**
-   * @description Define type check function
+   * @description Check type based on isTypes
    * @param {Any} value
    * @return {Boolean}
    */
-  isTypes(value) {
+  __check__(value) {
     return typeof value === 'boolean';
   }
 }

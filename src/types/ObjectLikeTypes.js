@@ -1,5 +1,6 @@
 import * as $$ from '../funcs/Funcs';
 import { TypesBase } from './TypesBase';
+import { GolguaError } from '../golgua/GolguaError';
 
 /**
  * @description Super Class
@@ -23,11 +24,11 @@ export class ObjectTypes extends ObjectLikeTypes {
     ) {
       for (const key in this.__types__) {
         if (!(this.__types__[key] instanceof TypesBase)) {
-          throw new Error('ObjectTypes.typesMember');
+          throw new GolguaError();
         }
       }
     } else {
-      throw new Error('ObjectTypes.types');
+      throw new GolguaError();
     }
   }
 
@@ -36,27 +37,16 @@ export class ObjectTypes extends ObjectLikeTypes {
    * @param {any} value check value
    * @return {Boolean}
    */
-  check(value) {
-    if (!$$.isObject(value)) return { success: false, data: value };
-    if ($$.isEmpty(value)) return { success: this.__empty__, data: {} };
-    if ($$.size(value) !== $$.size(this.__types__)) {
-      return { success: false, data: value };
-    }
-
-    let data = {};
+  __check__(value) {
+    if (!$$.isObject(value)) return false;
+    if ($$.isEmpty(value)) return this.__empty__;
+    if ($$.size(value) !== $$.size(this.__types__)) return false;
 
     for (const key in this.__types__) {
-      const types = this.__types__[key];
-      const result = types.check(value[key]);
-
-      if (!result.success) return { success: false, data: value };
-
-      data[key] = result.data;
+      if (!this.__types__[key].__check__(value[key])) return false;
     }
 
-    data = this.__proc__ ? this.__proc__(data) : data;
-
-    return { success: true, data };
+    return true;
   }
 }
 
@@ -74,7 +64,7 @@ export class ArrayTypes extends ObjectLikeTypes {
       if ($$.isObject(this.__types__)) {
         this.__types__ = new ObjectTypes({ types: this.__types__ });
       } else {
-        throw new Error(
+        throw new GolguaError(
           'The types of "ArrayTypes" must be Golgua Types Instance.'
         );
       }
@@ -86,23 +76,15 @@ export class ArrayTypes extends ObjectLikeTypes {
    * @param {any} value check value
    * @return {Boolean}
    */
-  check(value) {
+  __check__(value) {
     if (!Array.isArray(value) || ($$.isEmpty(value) && !this.__empty__)) {
-      return { success: false, data: value };
+      return false;
     }
-
-    let data = [];
 
     for (const i in value) {
-      const result = this.__types__.check(value[i]);
-
-      if (!result.success) return { success: false, data: value };
-
-      data.push(result.data);
+      if (!this.__types__.__check__(value[i])) return false;
     }
 
-    data = this.__proc__ ? this.__proc__(data) : data;
-
-    return { success: true, data };
+    return true;
   }
 }

@@ -1,17 +1,17 @@
 import { Types } from './types/Types';
 import {
-  subscription,
   update,
-  updateWithTypes,
-  setUpdateListener,
+  subscription,
+  getStoreValue,
+  addEventListener,
 } from './golgua/Golgua';
 
 const Golgua = {
   Types,
-  subscription,
   update,
-  updateWithTypes,
-  setUpdateListener,
+  subscription,
+  getStoreValue,
+  addEventListener,
 };
 
 export default Golgua;
