@@ -32,7 +32,7 @@ declare namespace Golgua {
   }
 
   function subscription(types: TypesInstance<any>);
-  function update(input_value: any, store_name: string);
+  function update(input_value: any, store_name?: string);
   function getStoreValue(): object;
   function addEventListener(
     event: 'updated',

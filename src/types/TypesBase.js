@@ -44,9 +44,7 @@ export class TypesBase {
     if (name && name !== this.__name__) return false;
 
     if (this.__check__(value)) {
-      if (!this.__dispatch__) {
-        throw new GolguaError('The dispatch function has not been set.');
-      }
+      if (!this.__dispatch__) return true;
 
       const state = GolguaTypesStore.Store[this.__name__];
       const data = this.__dispatch__(state, value);
