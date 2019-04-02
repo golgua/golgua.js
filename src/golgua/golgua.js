@@ -1,4 +1,3 @@
-import * as $$ from '../funcs/Funcs';
 import { TypesBase } from '../types/TypesBase';
 import { GolguaTypesStore } from '../store/TypesStore';
 import { GolguaError } from './GolguaError';
@@ -38,19 +37,20 @@ export const addEventListener = (event, cb) => {
  * @return {Any}
  */
 export const getStoreValue = () => {
-  return $$.clone(GolguaTypesStore.Store);
+  return Object.assign({}, GolguaTypesStore.Store);
 };
 
 /**
  * @description Update Store value according to argument type
  * @param {Any} value update value
+ * @param {String|Null} name store name
  */
-export const update = value => {
+export const update = (value, name = null) => {
   if (value === null || value === undefined) {
     throw new GolguaError(
       'null or undefined is not accepted as a value to update.'
     );
   }
 
-  GolguaTypesStore.update(value);
+  GolguaTypesStore.update(value, name);
 };

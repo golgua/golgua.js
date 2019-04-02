@@ -16,24 +16,30 @@ declare namespace Golgua {
   };
 
   interface TypesInstance<BaseType> {
-    defaultValue(): BaseType;
-    check(value: any): boolean;
+    update(value: any);
+    getState(): any;
   }
 
   interface TypesProperty<BaseType> {
-    default_value?: BaseType;
-    proc?: (value: any) => any;
+    name?: string;
+    dispatch?: (store: any, value: BaseType) => any;
+    store?: any;
   }
 
   interface TypesObjectLikeProperty<BaseType> extends TypesProperty<BaseType> {
-    types: TypesInstance<string | number | boolean | object | Array<any>>;
+    types: TypesInstance<BaseType>;
     empty?: boolean;
   }
 
-  type updateResult = { success: boolean; data: any }
-
   function subscription(types: TypesInstance<any>);
-  function update(input_value: any): updateResult;
-  function udateWithTypes(types: TypesInstance<any>, input_value: any ): updateResult;
-  function setUpdateListener( callback: (store_value: object) => void );
+  function update(input_value: any, store_name: string);
+  function getStoreValue(): object;
+  function addEventListener(
+    event: 'updated',
+    callback: (store: any, updated_store: { name: string; value: any }) => void
+  );
+  function addEventListener(
+    event: 'fail',
+    callback: (value: any, store_name: string | null) => void
+  );
 }

@@ -38,21 +38,30 @@ class TypesStore {
     const kind_store = this.Types[types.__kind__] || {};
     kind_store[types.__id__] = types;
     this.Types[types.__kind__] = kind_store;
-    this.Store[types.__name__] = types.defaultValue();
+  }
+
+  /**
+   * @description Create Store from names of Types
+   * @param {String} name store name
+   * @param {Any} default_value default store value
+   */
+  createStore(name, default_value) {
+    this.Store[name] = default_value;
   }
 
   /**
    * @description update store value
    * @param {any} value update value
+   * @param {String|Null} name store name
    */
-  update(value) {
+  update(value, name) {
     const kind_store = this.Types[typeof value];
 
     for (const type_id in kind_store) {
-      if (kind_store[type_id].update(value)) return;
+      if (kind_store[type_id].update(value, name)) return;
     }
 
-    this.callbacks.fail.forEach(cb => cb(value));
+    this.callbacks.fail.forEach(cb => cb(value, name));
   }
 
   /**
@@ -62,7 +71,7 @@ class TypesStore {
    */
   updateStoreValue(name, value) {
     this.Store[name] = value;
-    this.callbacks.updated.forEach(cb => cb(value, name, this.Store));
+    this.callbacks.updated.forEach(cb => cb(this.Store, { name, value }));
   }
 }
 

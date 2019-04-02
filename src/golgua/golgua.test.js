@@ -13,24 +13,27 @@ import chai from 'chai';
 const assert = chai.assert;
 
 describe('Golgua API Test', () => {
-  const types = Types.object({
-    name: 'user',
-    types: {
-      string: Types.string(),
-      number: Types.number(),
-      boolean: Types.boolean(),
-      array: Types.array({ types: Types.string() }),
-    },
-    dispatch: (store, v) => ({
-      name: v.string,
-      age: v.number,
-      male: v.boolean,
-      task: v.array,
-    }),
-  });
+  let types;
 
   beforeEach(() => {
     GolguaTypesStore.reset();
+
+    types = Types.object({
+      name: 'user',
+      types: {
+        string: Types.string(),
+        number: Types.number(),
+        boolean: Types.boolean(),
+        array: Types.array({ types: Types.string() }),
+      },
+      dispatch: (store, v) => ({
+        name: v.string,
+        age: v.number,
+        male: v.boolean,
+        task: v.array,
+      }),
+    });
+
     subscription(types);
   });
 
@@ -80,9 +83,9 @@ describe('Golgua API Test', () => {
   context('setUpdateListener API', () => {
     context('When updated event', () => {
       it('will execute the configured callback', done => {
-        addEventListener('updated', (value, type_name, store) => {
-          assert.deepEqual(store, { user: value });
-          assert.equal('user', type_name);
+        addEventListener('updated', (store, updated_store) => {
+          assert.deepEqual(store, { user: updated_store.value });
+          assert.equal('user', updated_store.name);
           done();
         });
 
@@ -109,6 +112,7 @@ describe('Golgua API Test', () => {
         assert.ok('ok');
       });
     });
+
     context('When fail event', () => {
       it('will execute the configured callback', done => {
         const update_value = {

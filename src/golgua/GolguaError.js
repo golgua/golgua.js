@@ -10,5 +10,3 @@ export class GolguaError extends Error {
     this.message = message;
   }
 }
-
-GolguaError.MESSAGE = {};

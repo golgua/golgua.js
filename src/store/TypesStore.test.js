@@ -14,7 +14,7 @@ describe('Golgua Types Store Test', () => {
   context('Methods Test', () => {
     context('setTypes function', () => {
       it('can set Types', () => {
-        const types = Types.string({ name: 'test', default: 'Hello' });
+        const types = Types.string({ name: 'test', store: 'Hello' });
         GolguaTypesStore.setTypes(types);
         assert.deepEqual(GolguaTypesStore.Store, { test: 'Hello' });
       });

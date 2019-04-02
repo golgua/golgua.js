@@ -13,14 +13,16 @@ export class TypesBase {
     this.__id__ = $$.getUniqueId();
     this.__types__ = property.types;
     this.__kind__ = property.kind;
-    this.__name__ = property.name;
     this.__empty__ = !!property.empty;
-    this.__default__ = property.default || null;
+    this.__name__ = property.name;
+    this.__store__ = property.store || null;
 
     this.__dispatch__ =
       typeof property.dispatch === 'function' ? property.dispatch : null;
-    this.__error__ =
-      typeof property.error === 'function' ? property.error : null;
+
+    if (this.__name__) {
+      GolguaTypesStore.createStore(this.__name__, this.__store__);
+    }
 
     if (this.__dispatch__ && !this.__name__) {
       throw new GolguaError('name is required to set dispatch');
@@ -35,33 +37,26 @@ export class TypesBase {
   /**
    * @description dispatch data
    * @param {Any} value udpate value
+   * @param {String|Null} name store name
    * @return {Boolean}
    */
-  update(value) {
+  update(value, name = null) {
+    if (name && name !== this.__name__) return false;
+
     if (this.__check__(value)) {
       if (!this.__dispatch__) {
         throw new GolguaError('The dispatch function has not been set.');
       }
 
       const state = GolguaTypesStore.Store[this.__name__];
-      const data = this.__dispatch__($$.clone(state), value);
+      const data = this.__dispatch__(state, value);
 
       GolguaTypesStore.updateStoreValue(this.__name__, data);
 
       return true;
     }
 
-    if (this.__error__) this.__error__(value);
-
     return false;
-  }
-
-  /**
-   * @description return default value
-   * @return {Any}
-   */
-  defaultValue() {
-    return $$.clone(this.__default__);
   }
 
   /**
