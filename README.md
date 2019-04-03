@@ -16,46 +16,48 @@ Distributing and managing data and processing by type.
 # install
 
 ```
-npm install golgua
+npm install golgua@beta
 ```
 
 or
 
 ```
-yarn add golgua
+yarn add golgua@beta
 ```
 
 # Usage
 
 ```javascript
-import Golgua from "golgua";
+import { update, Types, getStoreValue, subscription } from "golgua";
 
+const UsersTypes = Types.object({
+  name: "users",
+  store: [],
+  types:{
+    name: Types.string(),
+    age: Types.number(),
+    male: Types.boolean(),
+    tasks: Types.array({
+      types: Types.string()
+    })
+  },
+  dispatch(users, user){
+    console.log( users ); // store value
+    console.log( user );  // value passed in update function
 
-class SampleState extends Golgua.State {
-  constructor(){
-    super();
-
-    this.types = {
-      message : Golgua.Types.string()
-    }
+    return users.concat( user ); // next store value
   }
-
-  willUpdate( props ){
-    return {
-      message : props.message + "!!";
-    }
-  }
-
-}
-
-const maker = createMaker( SampleState );
-
-maker.listen( updated_data => {
-  alert( update_data.message ); // Hello World!!
 });
 
-maker.update({ message : "Hello World" });
+subscription(SampleTypes);
 
+console.log( SampleTypes.getState() ); // []
+console.log( getStoreValue() ); // { users:[] }
+
+update({ name:"Jon", age:99, male:true, tasks:[] });
+
+console.log( SampleTypes.getState() ); // [{ name:"Jon", age:99, male:true, tasks:[] }]
+console.log( getStoreValue() ); // { users:[{ name:"Jon", age:99, male:true, tasks:[] }] }
 ```
 
 # Contribution

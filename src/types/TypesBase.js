@@ -62,6 +62,6 @@ export class TypesBase {
    * @return {Any}
    */
   getState() {
-    return $$.clone(GolguaTypesStore.Store[this.__name__]);
+    return GolguaTypesStore.Store[this.__name__];
   }
 }
