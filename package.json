@@ -24,7 +24,7 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "cross-env NODE_ENV=production rollup -c",
     "test": "cross-env NODE_ENV=test mocha --require babel-core/register --recursive ./src/**/*.test.js",
     "unit-test": "cross-env NODE_ENV=test mocha --require babel-core/register --recursive",
     "fix": "eslint --fix"
