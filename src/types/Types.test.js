@@ -1,8 +1,8 @@
 import { Types } from './Types';
+import { TypesBase } from './TypesBase';
 import { StringTypes, NumberTypes, BooleanTypes } from './PrimeTypes';
 import { ObjectTypes, ArrayTypes } from './ObjectLikeTypes';
 import chai from 'chai';
-import { TypesBase } from './TypesBase';
 
 const assert = chai.assert;
 
