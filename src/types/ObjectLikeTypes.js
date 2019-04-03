@@ -23,12 +23,19 @@ export class ObjectTypes extends ObjectLikeTypes {
       !(this.__types__ instanceof TypesBase)
     ) {
       for (const key in this.__types__) {
-        if (!(this.__types__[key] instanceof TypesBase)) {
-          throw new GolguaError();
+        if (
+          typeof this.__types__[key] !== 'function' &&
+          !(this.__types__[key] instanceof TypesBase)
+        ) {
+          throw new GolguaError(
+            'Only functions or GolguaTypes can be set in the types property of ObjectTypes.'
+          );
         }
       }
     } else {
-      throw new GolguaError();
+      throw new GolguaError(
+        'Only plain Object can be set in types property of ObjectTypes.'
+      );
     }
   }
 
@@ -43,7 +50,13 @@ export class ObjectTypes extends ObjectLikeTypes {
     if ($$.size(value) !== $$.size(this.__types__)) return false;
 
     for (const key in this.__types__) {
-      if (!this.__types__[key].__check__(value[key])) return false;
+      const type = this.__types__[key];
+
+      if (typeof type === 'function') {
+        if (!type(value[key])) return false;
+      } else if (!type.__check__(value[key])) {
+        return false;
+      }
     }
 
     return true;
@@ -60,12 +73,15 @@ export class ArrayTypes extends ObjectLikeTypes {
   constructor(property) {
     super(property);
 
-    if (!(this.__types__ instanceof TypesBase)) {
+    if (
+      typeof this.__types__ !== 'function' &&
+      !(this.__types__ instanceof TypesBase)
+    ) {
       if ($$.isObject(this.__types__)) {
         this.__types__ = new ObjectTypes({ types: this.__types__ });
       } else {
         throw new GolguaError(
-          'The types of "ArrayTypes" must be Golgua Types Instance.'
+          'The types property of "ArrayTypes" can be set to function type or Golgua Types or Object type.'
         );
       }
     }
@@ -81,8 +97,14 @@ export class ArrayTypes extends ObjectLikeTypes {
       return false;
     }
 
+    let type = this.__types__;
+
+    if (!(typeof type === 'function')) {
+      type = type.__check__.bind(type);
+    }
+
     for (const i in value) {
-      if (!this.__types__.__check__(value[i])) return false;
+      if (!type(value[i])) return false;
     }
 
     return true;

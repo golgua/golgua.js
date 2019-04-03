@@ -21,7 +21,9 @@ describe('ObjectLikeTypes', () => {
     context('types property', () => {
       it('can set', () => {
         const objTypes = new ObjectTypes({ types });
+        const obj2Types = new ObjectTypes({ types: { test: v => !v } });
         assert.instanceOf(objTypes, ObjectTypes);
+        assert.instanceOf(obj2Types, ObjectTypes);
       });
 
       it("can't set", () => {
@@ -58,7 +60,9 @@ describe('ObjectLikeTypes', () => {
 
     context('types property', () => {
       it('can set', () => {
+        const arrTypes = new ArrayTypes({ types: v => !v });
         assert.instanceOf(normalArrayTypes, ArrayTypes);
+        assert.instanceOf(arrTypes, ArrayTypes);
       });
 
       it("can't set", () => {
