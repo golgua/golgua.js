@@ -39,9 +39,3 @@
 ### 報告方法
 
 - template に可能な限り従って報告してください。
-
-## Slack でのサポート
-
-slack でのサポートもしています。何か間違っている事や、気になることがあれば、気軽に参加してください。😆
-
-- [Slack招待URL](https://join.slack.com/t/golgua/shared_invite/enQtNTQxOTcyODk5MDg4LTQyYTQyODgxZjJmYmJmYTg4Njk1MmNiYjA2ZWEyMzNiNTk0MmYxMWY5MmIwOWE4OTIxMWRiMDE2NWQ1NDBjYzk)

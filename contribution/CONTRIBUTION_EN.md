@@ -39,9 +39,3 @@
 ### How to report.
 
 - Please use the template and report us.
-
-## Slack Support
-
-We also have a Slack for supporting. If you have any questions, feel free to join us and ask 😆
-
-- [Slack URL](https://join.slack.com/t/golgua/shared_invite/enQtNTQxOTcyODk5MDg4LTQyYTQyODgxZjJmYmJmYTg4Njk1MmNiYjA2ZWEyMzNiNTk0MmYxMWY5MmIwOWE4OTIxMWRiMDE2NWQ1NDBjYzk)
